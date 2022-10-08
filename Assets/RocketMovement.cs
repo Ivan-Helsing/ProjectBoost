@@ -6,17 +6,18 @@ public class RocketMovement : MonoBehaviour
 {
     [SerializeField] float boostForce;
     [SerializeField] float steeringSpeed;
-    private float zRotation;
+
+    public bool isThrusted = false;
 
     Rigidbody rigidBody;
+    AudioSource audioSource;
 
-    // Start is called before the first frame update
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKey(KeyCode.Space))
@@ -31,5 +32,8 @@ public class RocketMovement : MonoBehaviour
         {
             transform.Rotate(Vector3.forward * -steeringSpeed * Time.deltaTime);
         }
+        if (Input.GetKeyDown(KeyCode.Space)) { isThrusted = true; }
+        if (Input.GetKeyUp(KeyCode.Space)) { isThrusted = false; }
+        if (isThrusted) { audioSource.enabled = true; } else { audioSource.enabled = false; }
     }
 }
