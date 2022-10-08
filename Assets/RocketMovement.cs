@@ -18,12 +18,26 @@ public class RocketMovement : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    void Update()
+    void FixedUpdate()
+    {
+        RocketThrusting();
+        RocketSteering();
+    }
+    private void RocketThrusting()
     {
         if (Input.GetKey(KeyCode.Space))
-        {
+        {            
             rigidBody.AddRelativeForce(Vector3.up * boostForce * Time.deltaTime);
+            if (isThrusted) { return; }
+            isThrusted = true;
         }
+        else { isThrusted = false; }
+
+        ThrustingSFX();
+    }
+
+    private void RocketSteering()
+    {
         if (Input.GetKey(KeyCode.A))
         {
             transform.Rotate(Vector3.forward * steeringSpeed * Time.deltaTime);
@@ -32,8 +46,13 @@ public class RocketMovement : MonoBehaviour
         {
             transform.Rotate(Vector3.forward * -steeringSpeed * Time.deltaTime);
         }
-        if (Input.GetKeyDown(KeyCode.Space)) { isThrusted = true; }
-        if (Input.GetKeyUp(KeyCode.Space)) { isThrusted = false; }
-        if (isThrusted) { audioSource.enabled = true; } else { audioSource.enabled = false; }
     }
+
+    private void ThrustingSFX()
+    {
+        if (isThrusted) { audioSource.Play(); }
+        else { audioSource.Stop(); }
+    }
+
+   
 }
