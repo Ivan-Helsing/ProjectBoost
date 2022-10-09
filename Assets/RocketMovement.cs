@@ -11,6 +11,7 @@ public class RocketMovement : MonoBehaviour
 
     Rigidbody rigidBody;
     AudioSource audioSource;
+    Collider[] rocketCollider;
 
     SceneTransitions sceneTransitions;
 
@@ -19,6 +20,8 @@ public class RocketMovement : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
         sceneTransitions = FindObjectOfType<SceneTransitions>();
+        rocketCollider = GetComponentsInChildren<Collider>();
+        DeactivateColliders(true);
     }
 
     void FixedUpdate()
@@ -63,14 +66,25 @@ public class RocketMovement : MonoBehaviour
         {
             case ("Finish"):
                 sceneTransitions.LoadNextLevel();
+                DeactivateColliders(false);
                 break;
             case ("Respawn"):
                 break;
             default:
                 sceneTransitions.RestartLevel();
+                DeactivateColliders(false);
                 break;
         }
 
     }
+
+    private void DeactivateColliders(bool colliderStatement)
+    {
+        foreach(Collider collider in rocketCollider)
+        {
+            collider.enabled = colliderStatement;
+        }
+    }
+
 
 }

@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class SceneTransitions : MonoBehaviour
 {
+    [SerializeField] float loadSceneDelay;
+
     private int currentRoom;
     private int nextRoom;
 
@@ -16,21 +18,30 @@ public class SceneTransitions : MonoBehaviour
 
     public void LoadNextLevel()
     {
-        if (nextRoom >= SceneManager.sceneCountInBuildSettings)
-        {
-            ToStartLevel();
-            return;
-        }
-        else SceneManager.LoadSceneAsync(nextRoom);
+        StartCoroutine(ToStartLevel());
+        
     }
 
-    private static void ToStartLevel()
+    IEnumerator ToStartLevel()
     {
-        SceneManager.LoadScene(0);
+        yield return new WaitForSeconds(loadSceneDelay);
+
+        if (nextRoom >= SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadSceneAsync(0);
+        }
+        else SceneManager.LoadSceneAsync(nextRoom);
+        
     }
 
     public void RestartLevel()
     {
+        StartCoroutine(RestartLevelCoroutine());
+    }
+
+    IEnumerator RestartLevelCoroutine()
+    {
+        yield return new WaitForSeconds(loadSceneDelay);
         SceneManager.LoadSceneAsync(currentRoom);
     }
 
