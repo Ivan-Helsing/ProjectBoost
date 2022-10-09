@@ -12,10 +12,13 @@ public class RocketMovement : MonoBehaviour
     Rigidbody rigidBody;
     AudioSource audioSource;
 
+    SceneTransitions sceneTransitions;
+
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
+        sceneTransitions = FindObjectOfType<SceneTransitions>();
     }
 
     void FixedUpdate()
@@ -54,5 +57,20 @@ public class RocketMovement : MonoBehaviour
         else { audioSource.Stop(); }
     }
 
-   
+    private void OnCollisionEnter(Collision collision)
+    {
+        switch (collision.gameObject.tag)
+        {
+            case ("Finish"):
+                sceneTransitions.LoadNextLevel();
+                break;
+            case ("Respawn"):
+                break;
+            default:
+                sceneTransitions.RestartLevel();
+                break;
+        }
+
+    }
+
 }
